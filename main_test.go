@@ -62,6 +62,19 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+func TestLogin(t *testing.T) {
+	user := `{"username": "test", "password": "pass"}`
+	data, err := json.Marshal(user)
+	request, err := http.NewRequest("POST", "/login", bytes.NewReader(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	requestChecker := newRequestRecorder(request, "POST", "/login", LoginUser)
+	if requestChecker.Code != http.StatusOK {
+		t.Error("Create user did not successfully save")
+	}
+}
+
 func newRequestRecorder(req *http.Request, method string, strPath string, fnHandler func(w http.ResponseWriter, r *http.Request, param httprouter.Params)) *httptest.ResponseRecorder {
 	router := httprouter.New()
 	router.Handle(method, strPath, fnHandler)

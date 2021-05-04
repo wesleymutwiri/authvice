@@ -51,9 +51,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// func(u User) createUser(user struct) (bool, error) {
-
-// }
+func LoginUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Println(json.NewDecoder(r.Body))
+}
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "Welcome!\n")
