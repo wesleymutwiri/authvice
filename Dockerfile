@@ -22,6 +22,6 @@ WORKDIR /root/
 
 COPY --from=builder /app/main .
 
-EXPOSE 10000
+EXPOSE 10000 10000
 
 CMD ["./main"]

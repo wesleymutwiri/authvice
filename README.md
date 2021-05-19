@@ -10,15 +10,16 @@ A very simple authentication system in golang.
     ```bash
     $ git clone https://github.com/wesleymutwiri/authvice.git && cd authvice
     ```
-    ii. Build the file using docker creating a tag go-docker-optimized
+    ii. Change database settings in main.go to point to your own running instance of postgres
+    iii. Build the file using docker creating a tag go-docker-optimized
     ```bash
     $ docker build -t go-docker-optimized -f Dockerfile .
     ```
-    iii. Run the docker container once finished exposing the port to your local computer's port
+    iv. Run the docker container once finished exposing the port to your local computer's port
     ```bash
     $ docker run -p 127.0.0.1:10000:10000 go-docker-optimized:latest
     ```
-    iv. The application will be running on port 10000 and can be accessed through: [localhost:10000](http://localhost:10000)
+    v. The application will be running on port 10000 and can be accessed through: [localhost:10000](http://localhost:10000)
 
 2. Run the code directly if you have go installed on the machine
 
@@ -34,6 +35,21 @@ A very simple authentication system in golang.
     ```bash
     $ ./main
     ```
+
+3. With docker-compose (easiest, most recommended)
+    i. Clone Repository and change directory into the folder
+    ```bash
+    $ git clone https://github.com/wesleymutwiri/authvice.git && cd authvice
+    ```
+    ii. Create a .env file with credentials for the database docker container
+    ```bash
+    $ echo "POSTGRES_USER=user \nPOSTGRES_PASSWORD=password \nPOSTGRES_DB=authvice" > .env
+    ```
+    iii. Ensure docker-compose is installed on your machine and run the following command:
+    ```bash
+    $ docker-compose up --build
+    ```
+    iv. Access the application on your local computer's port 10000
 
 ## Running tests
 You can run the tests by simply running the following command in the root folder of the application. PS - If you have zsh installed refuse to accept autocorrect:

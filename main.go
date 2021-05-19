@@ -1,12 +1,16 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/julienschmidt/httprouter"
+
+	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -60,6 +64,24 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "Welcome!\n")
 }
 
+func initializeDB(dbPort int, dbName, dbUser, dbPassword, dbHost string) (*sql.DB, error) {
+	var err error
+	dbInformation := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbHost, 5432, dbUser, dbPassword, dbName)
+	db, err := sql.Open("postgres", dbInformation)
+	if err != nil {
+		log.Fatal("This is the error: ", err)
+		fmt.Printf("Cannot connect to %s database", dbInformation)
+		return nil, err
+	}
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	log.Println("Database Connection established")
+	return db, nil
+}
+
 func main() {
 	// text := []byte("some password")
 	// hash, err := bcrypt.GenerateFromPassword(text, bcrypt.DefaultCost)
@@ -93,6 +115,12 @@ func main() {
 	// value, err := newUser.checkPassword("some password")
 	// fmt.Println(value, err)
 	router := httprouter.New()
+	dbUser, dbPassword, dbName := os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB")
+	database, err := initializeDB(5432, dbName, dbUser, dbPassword, "database")
+	if err != nil {
+		log.Fatalf("Could not set up database %v", err)
+	}
+	defer database.Close()
 	router.GET("/", Index)
 	router.POST("/user", CreateUser)
 	log.Fatal(http.ListenAndServe(":10000", router))
